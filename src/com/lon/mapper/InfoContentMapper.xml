@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="InfoContent">
+	
+	<insert id="add" parameterType="InfoContent">
+		insert into wxms_info_content(pid,content,tid,user_id,createTime)
+		values(#{pid},#{content},#{tid},#{user_id},#{createTime})
+	</insert>
+	<insert id="addMore">
+		insert into wxms_info_content(pid,content,tid,user_id,createTime)
+		values
+		<foreach collection="list" separator="," item="u">
+			(#{u.pid},#{u.content},#{u.tid},#{u.user_id},#{u.createTime})
+		</foreach>
+	</insert>
+	<update id="update" parameterType="InfoContent">
+		update wxms_info_content set
+		name = #{name},
+		content = #{content},
+		type = #{type},
+		remark = #{remark},
+		user_id = #{user_id},
+		createTime = #{createTime}
+		where id = #{id}
+	</update>
+	<!-- 根据ID查询 -->
+	<select id="queryById" resultType="InfoContent">
+		select * from wxms_info_content where id = #{id}
+	</select>
+	<!-- 查询所有记录 -->
+	<select id="queryAll" resultType="InfoContent">
+		select * from wxms_info_content
+	</select>
+	<!-- 分页查询 -->
+	<select id="queryByPage" parameterType="map" resultType="InfoContent">
+		select * from wxms_info_content limit #{start},#{pageSize}
+	</select>
+	
+	
+	<!-- 查询总记录数 -->
+	<select id="getTotals" resultType="int">
+		select count(*) from wxms_info_content
+	</select>
+	<!-- 删除记录 -->
+	<delete id="deleteById">
+		delete from wxms_info_content where id = #{id}
+	</delete>
+	<!-- 删除多条记录 -->
+	<delete id="deleteMore">
+		delete from wxms_info_content where id in
+		<foreach collection="array" open="(" close=")" separator="," item="id">
+			#{id}
+		</foreach>
+	</delete>
+	
+</mapper>
+

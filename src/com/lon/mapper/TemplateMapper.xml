@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Template">
+	
+	<insert id="add" parameterType="Template">
+		insert into wxms_template(id,name,content,type,remark,user_id,createTime)
+		values(#{id},#{name},#{content},#{type},#{remark},#{user_id},Sysdate)
+	</insert>
+	<insert id="addMore">
+		insert into wxms_template(id,name,content,type,remark,user_id,createTime)
+		values
+		<foreach collection="list" separator="," item="u">
+			(#{u.id},#{u.name},#{u.content},#{u.type},#{u.remark},#{u.user_id},#{u.Sysdate})
+		</foreach>
+	</insert>
+	<update id="update" parameterType="Template">
+		update wxms_template set
+		name = #{name},
+		content = #{content},
+		type = #{type},
+		remark = #{remark},
+		user_id = #{user_id},
+		createTime = Sysdate
+		where id = #{id}
+	</update>
+	<!-- 根据ID查询 -->
+	<select id="queryById" resultType="Template">
+		select * from wxms_template where id = #{id}
+	</select>
+	<!-- 查询所有记录 -->
+	<select id="queryAll" resultType="Template">
+		select * from wxms_template
+	</select>
+	<!-- 分页查询 -->
+	<select id="queryByPage" parameterType="map" resultType="Template">
+		select * from wxms_template limit #{start},#{pageSize}
+	</select>
+	
+	<select id="tqueryByPage" parameterType="map" resultType="com.lon.vo.TemplateVo">
+		select u.name from WXMS_TEMPLATE t,wxms_user u 
+		where t.user_id=u.id
+		
+	</select>
+	
+	
+	<!-- 查询总记录数 -->
+	<select id="getTotals" resultType="int">
+		select count(*) from wxms_template
+	</select>
+	<!-- 删除记录 -->
+	<delete id="deleteById">
+		delete from wxms_template where id = #{id}
+	</delete>
+	<!-- 删除多条记录 -->
+	<delete id="deleteMore">
+		delete from wxms_template where id in
+		<foreach collection="array" open="(" close=")" separator="," item="id">
+			#{id}
+		</foreach>
+	</delete>
+	
+</mapper>
+

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="PublicNumberCheck">
+	
+	<insert id="add" parameterType="PublicNumberCheck">
+		insert into wxms_public_number_check(id,pid,user_id,applyTime,advice,state,checkedTime)
+		values(#{id},#{pid},#{user_id},#{applyTime},#{advice},#{state},Sysdate)
+	</insert>
+	<insert id="addMore">
+		insert into wxms_public_number_check(id,pid,user_id,applyTime,advice,state,checkedTime)
+		values
+		<foreach collection="list" separator="," item="u">
+			(#{u.id},#{u.pid},#{u.user_id},#{u.applyTime},#{u.advice},#{u.state},#{u.Sysdate})
+		</foreach>
+	</insert>
+	<update id="update" parameterType="PublicNumberCheck">
+		update wxms_public_number_check set
+		pid = #{pid},
+		user_id = #{user_id},
+		applyTime = #{applyTime},
+		advice = #{advice},
+		state = #{state},
+		checkedTime = Sysdate
+		where id = #{id}
+	</update>
+	<!-- 根据ID查询 -->
+	<select id="queryById" resultType="PublicNumberCheck">
+		select * from wxms_public_number_check where id = #{id}
+	</select>
+	<!-- 查询所有记录 -->
+	<select id="queryAll" resultType="PublicNumberCheck">
+		select * from wxms_public_number_check 
+	</select>
+	<!-- 分页查询 -->
+	<select id="queryByPage" parameterType="map" resultType="PublicNumberCheck">
+		select * from wxms_public_number_check limit #{start},#{pageSize}
+	</select>
+	
+	
+	
+	
+	<select id="uqueryByPage" parameterType="map" resultType="com.lon.vo.PublicNumberCheckVo">
+		select pnc.id,pn.public_name pname,u.name user_name,pnc.applytime,pnc.advice,pnc.state,pnc.checkedtime 
+		from WXMS_PUBLIC_NUMBER_CHECK pnc,wxms_user u,wxms_public_number pn 
+		where pnc.pid=pn.id and pnc.user_id=u.id
+	</select>
+	
+	<!-- 查询总记录数 -->
+	<select id="getTotals" resultType="int">
+		select count(*) from wxms_public_number_check
+	</select>
+	<!-- 删除记录 -->
+	<delete id="deleteById">
+		delete from wxms_public_number_check where id = #{id}
+	</delete>
+	<!-- 删除多条记录 -->
+	<delete id="deleteMore">
+		delete from wxms_public_number_check where id in
+		<foreach collection="array" open="(" close=")" separator="," item="id">
+			#{id}
+		</foreach>
+	</delete>
+	
+</mapper>
+

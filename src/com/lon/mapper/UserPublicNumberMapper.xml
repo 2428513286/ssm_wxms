@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="UserPublicNumber">
+	
+	<insert id="add" parameterType="UserPublicNumber">
+		insert into wxms_user_public_number(id,user_id,pid)
+		values(#{id},#{user_id},#{pid})
+	</insert>
+	<insert id="addMore">
+		insert into wxms_user_public_number(user_id,pid)
+		values
+		<foreach collection="list" separator="," item="u">
+			(#{u.user_id},#{u.pid})
+		</foreach>
+	</insert>
+	<update id="update" parameterType="UserPublicNumber">
+		update wxms_user_public_number set
+		user_name = #{user_name},
+		pname = #{pname}
+		where id = #{id}
+	</update>
+	<!-- 根据ID查询 -->
+	<select id="queryById" resultType="UserPublicNumber">
+		select * from wxms_user_public_number where id = #{id}
+	</select>
+	<!-- 查询所有记录 -->
+	<select id="queryAll" resultType="UserPublicNumber">
+		
+		<!--  select * from wxms_user_public_number -->  
+		select un.id,u.name user_name,pn.public_name pname from  wxms_user u,wxms_user_public_number un,wxms_public_number pn 
+		where un.user_id=u.id and un.pid=pn.id
+		
+		
+	</select>
+	<!-- 分页查询 -->
+	<select id="queryByPage" parameterType="map" resultType="UserPublicNumber">
+		
+		select b.* from(
+		select rownum rn,a.* from
+		(select * from wxms_user_public_number order by id) a
+		where rownum &lt;=#{start}) b
+		where b.rn>#{end} 
+		
+	</select>
+	
+	<select id="uqueryByPage" parameterType="map" resultType="com.lon.vo.UserPublicNumberVo">
+		
+		select un.id,u.name user_name,pn.public_name pname from  wxms_user u,wxms_user_public_number un,wxms_public_number pn 
+		where un.user_id=u.id and un.pid=pn.id
+	</select>
+	
+	<!-- 查询总记录数 -->
+	<select id="getTotals" resultType="int">
+		select count(*) from wxms_user_public_number
+	</select>
+	<!-- 删除记录 -->
+	<delete id="deleteById">
+		delete from wxms_user_public_number where id = #{id}
+	</delete>
+	<!-- 删除多条记录 -->
+	<delete id="deleteMore">
+		delete from wxms_user_public_number where id in
+		<foreach collection="array" open="(" close=")" separator="," item="id">
+			#{id}
+		</foreach>
+	</delete>
+	
+</mapper>
+

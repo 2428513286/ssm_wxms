@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="User">
+	
+	<insert id="add" parameterType="User">
+		insert into wxms_user(id,username,password,name,sex,phone,address,email,photo,role,createTime)
+		values(#{id},#{username},#{password},#{name},#{sex},#{phone},#{address},#{email},#{photo},#{role},Sysdate)
+	</insert>
+	<insert id="addMore">
+		insert into wxms_user(username,password,name,sex,phone,address,email,photo,role,createTime)
+		values
+		<foreach collection="list" separator="," item="u">
+			(#{u.username},#{u.password},#{u.name},#{u.sex},#{u.phone},#{u.address},#{u.email},#{u.photo},#{u.role},#{u.Sysdate})
+		</foreach>
+	</insert>
+	<update id="update" parameterType="User">
+		update wxms_user set
+		username = #{username},
+		password = #{password},
+		name = #{name},
+		sex = #{sex},
+		phone = #{phone},
+		address = #{address},
+		email = #{email},
+		photo = #{photo},
+		role = #{role},
+		createTime = Sysdate
+		where id = #{id}
+	</update>
+	<!-- 根据ID查询 -->
+	<select id="queryById" resultType="User">
+		select * from wxms_user where id = #{id}
+	</select>
+	<!-- 查询所有记录 -->
+	<select id="queryAll" resultType="User">
+		 select * from wxms_user   
+		
+		
+	</select>
+	<!-- 分页查询 -->
+	<select id="queryByPage" parameterType="map" resultType="User">
+		select b.* from(
+		select rownum rn,a.* from
+		(select * from wxms_user order by id) a
+		where rownum &lt;=#{start}) b
+		where b.rn>#{end}
+	</select>
+	
+	
+	<!-- 查询总记录数 -->
+	<select id="getTotals" resultType="int">
+		select count(*) from wxms_user
+	</select>
+	<!-- 删除记录 -->
+	<delete id="deleteById">
+		delete from wxms_user where id = #{id}
+	</delete>
+	<!-- 删除多条记录 -->
+	<delete id="deleteMore">
+		delete from wxms_user where id in
+		<foreach collection="array" open="(" close=")" separator="," item="id">
+			#{id}
+		</foreach>
+	</delete>
+	
+</mapper>
+

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="PublicNumber">
+	
+	<insert id="add" parameterType="PublicNumber">
+		insert into wxms_public_number(id,public_id,public_name,public_type,name,phone,address,logo,regDate,createTime)
+		values(#{id},#{public_id},#{public_name},#{public_type},#{name},#{phone},#{address},#{logo},#{regDate},Sysdate)
+	</insert>
+	<insert id="addMore">
+		insert into wxms_public_number(id,public_id,public_name,public_type,name,phone,address,logo,regDate,createTime)
+		values
+		<foreach collection="list" separator="," item="u">
+			(#{u.id},#{u.public_id},#{u.public_name},#{u.public_type},#{u.name},#{u.phone},#{u.address},#{u.logo},#{u.regDate},#{u.Sysdate})
+		</foreach>
+	</insert>
+	<update id="update" parameterType="PublicNumber">
+		update wxms_public_number set
+		public_id = #{public_id},
+		public_name = #{public_name},
+		public_type = #{public_type},
+		name = #{name},
+		phone = #{phone},
+		address = #{address},
+		logo = #{logo},
+		regDate = #{regDate},
+		createTime = Sysdate
+		where id = #{id}
+	</update>
+	<!-- 根据ID查询 -->
+	<select id="queryById" resultType="PublicNumber">
+		select * from wxms_public_number where id = #{id}
+	</select>
+	<!-- 查询所有记录 -->
+	<select id="queryAll" resultType="PublicNumber">
+		select * from WXMS_PUBLIC_NUMBER pn
+	</select>
+	<!-- 分页查询 -->
+	<select id="queryByPage" parameterType="map" resultType="PublicNumber">
+		select b.* from(
+		select rownum rn,a.* from
+		(select * from wxms_public_number order by id) a
+		where rownum &lt;=#{start}) b
+		where b.rn>#{end}
+	</select>
+	
+	
+	<!-- 查询总记录数 -->
+	<select id="getTotals" resultType="int">
+		select count(*) from wxms_public_number
+	</select>
+	<!-- 删除记录 -->
+	<delete id="deleteById">
+		delete from wxms_public_number where id = #{id}
+	</delete>
+	<!-- 删除多条记录 -->
+	<delete id="deleteMore">
+		delete from wxms_public_number where id in
+		<foreach collection="array" open="(" close=")" separator="," item="id">
+			#{id}
+		</foreach>
+	</delete>
+	
+</mapper>
+

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="InfoContentCheck">
+	
+	<insert id="add" parameterType="InfoContentCheck">
+		insert into wxms_info_content_check(pid,content,user_id,applyTime,state,advice,checkedTime)
+		values(#{pid},#{content},#{user_id},#{applyTime},#{state},#{advice},#{checkedTime})
+	</insert>
+	<insert id="addMore">
+		insert into wxms_info_content_check(pid,content,user_id,applyTime,state,advice,checkedTime)
+		values
+		<foreach collection="list" separator="," item="u">
+			(#{u.pid},#{u.content},#{u.user_id},#{u.applyTime},#{u.state},#{u.advice},#{u.checkedTime}})
+		</foreach>
+	</insert>
+	<update id="update" parameterType="InfoContentCheck">
+		update wxms_info_content_check set
+		pid = #{pid},
+		content = #{content},
+		user_id = #{user_id},
+		applyTime = #{applyTime},
+		state = #{state},
+		advice = #{advice},
+		checkedTime = #{checkedTime}
+		where id = #{id}
+	</update>
+	<!-- 根据ID查询 -->
+	<select id="queryById" resultType="InfoContentCheck">
+		select * from wxms_info_content_check where id = #{id}
+	</select>
+	<!-- 查询所有记录 -->
+	<select id="queryAll" resultType="InfoContentCheck">
+		select * from wxms_info_content_check
+	</select>
+	<!-- 分页查询 -->
+	<select id="queryByPage" parameterType="map" resultType="InfoContentCheck">
+		select * from wxms_info_content_check limit #{start},#{pageSize}
+	</select>
+	
+	
+	<!-- 查询总记录数 -->
+	<select id="getTotals" resultType="int">
+		select count(*) from wxms_info_content_check
+	</select>
+	<!-- 删除记录 -->
+	<delete id="deleteById">
+		delete from wxms_info_content_check where id = #{id}
+	</delete>
+	<!-- 删除多条记录 -->
+	<delete id="deleteMore">
+		delete from wxms_info_content_check where id in
+		<foreach collection="array" open="(" close=")" separator="," item="id">
+			#{id}
+		</foreach>
+	</delete>
+	
+</mapper>
+
